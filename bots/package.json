@@ -14,6 +14,7 @@
 	"scripts": {
 		"chainlink-pricer": "node openzeppelin-defender/testnet/chainlink-pricer-bot.js",
 		"liquidate-me-bro": "node vault-collateral-threshold-bot.js",
+		"gmx-hedger": "node openzeppelin-defender/mainnet/gmx-collateral-manager.js",
 		"compound-pricer": "node compound-pricer-bot.js",
 		"chainlink-disputer:weth": "node chainlink-disputer-bot.js",
 		"yearn-pricer": "node yearn-pricer.js"
