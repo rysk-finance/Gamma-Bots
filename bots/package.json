@@ -13,8 +13,10 @@
 	},
 	"scripts": {
 		"chainlink-pricer": "node openzeppelin-defender/testnet/chainlink-pricer-bot.js",
-		"liquidate-me-bro": "node vault-collateral-threshold-bot.js",
+		"vault-manager": "node openzeppelin-defender/testnet/vault-collateral-manager.js",
 		"gmx-hedger": "node openzeppelin-defender/mainnet/gmx-collateral-manager.js",
+		"perp-hedger": "node openzeppelin-defender/testnet/perp-collateral-manager",
+		"series-deactivator": "node openzeppelin-defender/testnet/series-deactivator.js",
 		"compound-pricer": "node compound-pricer-bot.js",
 		"chainlink-disputer:weth": "node chainlink-disputer-bot.js",
 		"yearn-pricer": "node yearn-pricer.js"
