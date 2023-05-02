@@ -21,7 +21,7 @@ const seriesDeactivatorLogic = async (
 	const beyondPricer = new ethers.Contract(beyondPricerAddress, beyondPricerAbi, signer)
 	const manager = new ethers.Contract(managerAddress, managerAbi, signer)
 
-	const minExpiryTime = (await liquidityPool.optionParams()).minExpiry.toNumber()
+	const minExpiryTime = 86400
 	const expirations = await optionCatalogue.getExpirations()
 
 	const minDelta = 0.1
@@ -31,15 +31,9 @@ const seriesDeactivatorLogic = async (
 	const totalInput = []
 
 	for (let i = 0; i < expirations.length; i++) {
-		console.log('i:', i)
-		console.log(new Date(expirations[i] * 1000))
 		const callStrikes = await optionCatalogue.getOptionDetails(expirations[i], false)
 		const putStrikes = await optionCatalogue.getOptionDetails(expirations[i], true)
 
-		console.log({
-			callStrikes: callStrikes.map(x => ethers.utils.formatEther(x)),
-			putStrikes: putStrikes.map(x => ethers.utils.formatEther(x))
-		})
 		if (expirations[i] < Date.now() / 1000 + minExpiryTime) {
 			// expiration date is below our minimum DTE. Make all options on this expiration untradeable
 			// format array for changeOptionBuyOrSell that contains all option series of this expiration
@@ -78,14 +72,12 @@ const seriesDeactivatorLogic = async (
 			const input = formattedOptions.filter((option, index) => {
 				return currentStatusArray[index].isBuyable || currentStatusArray[index].isSellable
 			})
-			console.log({ currentStatusArray })
-			console.log('input', input)
+
 			// if any options are still tradeable on this expiration, set them to not tradeable.
 			if (input.length) {
 				totalInput.push(input)
 			}
 		} else {
-			console.log('expiry fine')
 			// expiration date is still valid. check delta values on series individually.
 			// get array of Types.OptionSeries format
 			const optionSeriesArray = callStrikes
@@ -111,7 +103,6 @@ const seriesDeactivatorLogic = async (
 						}
 					})
 				)
-			console.log({ optionSeriesArray })
 			for (let j = 0; j < optionSeriesArray.length; j++) {
 				// iterate over array, get delta value of option
 				const { totalDelta } = await beyondPricer.quoteOptionPrice(
@@ -125,8 +116,6 @@ const seriesDeactivatorLogic = async (
 					Math.abs(parseFloat(utils.formatEther(totalDelta))) < minDelta
 				) {
 					// delta out of range
-					console.log('OOB', parseFloat(utils.formatEther(totalDelta)))
-
 					const currentState = await optionCatalogue.optionStores(
 						ethers.utils.solidityKeccak256(
 							['uint64', 'uint128', 'bool'],
@@ -137,7 +126,6 @@ const seriesDeactivatorLogic = async (
 							]
 						)
 					)
-					console.log({ currentState })
 					// if the option is tradable, make it not tradeable
 					if (currentState.isBuyable || currentState.isSellable)
 						totalInput.push({
