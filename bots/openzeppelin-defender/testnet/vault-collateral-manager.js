@@ -1,21 +1,18 @@
-require("dotenv").config()
-const {
-	DefenderRelaySigner,
-	DefenderRelayProvider
-} = require("defender-relay-client/lib/ethers")
-const { KeyValueStoreClient } = require("defender-kvstore-client")
-const vaultCollateralManagerLogic = require("../../core-logic/vault-collateral-manager")
+require('dotenv').config()
+const { DefenderRelaySigner, DefenderRelayProvider } = require('defender-relay-client/lib/ethers')
+const { KeyValueStoreClient } = require('defender-kvstore-client')
+const vaultCollateralManagerLogic = require('../../core-logic/vault-collateral-manager')
 
 // Entrypoint for the Autotask
 // Function to keep track of all active Vault IDs and periodically check their collateral health factors and add/remove collateral as needed
 exports.handler = async function (credentials) {
-	const store = new KeyValueStoreClient({ path: "./store.json" })
+	const store = new KeyValueStoreClient({ path: './store.json' })
 	// config
-	const relayerAddress = "0x8a8b3efb77c973f54f7b072cff3bd47240aac605"
-	const optionRegistryAddress = "0x217D9CD001CFBc9A8E1b812752b537556e073D4f"
-	const controllerAddress = "0x2acb561509a082bf2c58ce86cd30df6c2c2017f6"
+	const relayerAddress = '0x0b95d8e9ca7ff55be19f9f69d789b4ba5131dd3b'
+	const optionRegistryAddress = '0x4E89cc3215AF050Ceb63Ca62470eeC7C1A66F737'
+	const controllerAddress = '0x11a602a5F5D823c103bb8b7184e22391Aae5F4C2'
 	// block that the option regsitry was deployed on
-	const optionRegistryDeployBlock = 14157522
+	const optionRegistryDeployBlock = 18196415
 
 	let provider
 	let signer
@@ -23,7 +20,7 @@ exports.handler = async function (credentials) {
 
 	provider = new DefenderRelayProvider(credentials)
 	signer = new DefenderRelaySigner(credentials, provider, {
-		speed: "fast",
+		speed: 'fast',
 		from: relayerAddress
 	})
 
@@ -49,7 +46,7 @@ if (require.main === module) {
 		.then(() => process.exit(0))
 		.catch(error => {
 			console.error(error)
-			console.log("error hit")
+			console.log('error hit')
 			process.exit(1)
 		})
 }
