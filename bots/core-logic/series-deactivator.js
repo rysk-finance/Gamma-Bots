@@ -35,6 +35,9 @@ const seriesDeactivatorLogic = async (
 		const putStrikes = await optionCatalogue.getOptionDetails(expirations[i], true)
 
 		if (expirations[i] < Date.now() / 1000 + minExpiryTime) {
+			if (expirations[i] < Date.now() / 1000) {
+				break
+			}
 			// expiration date is below our minimum DTE. Make all options on this expiration untradeable
 			// format array for changeOptionBuyOrSell that contains all option series of this expiration
 			const formattedOptions = callStrikes
