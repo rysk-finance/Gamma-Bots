@@ -78,7 +78,7 @@ const seriesDeactivatorLogic = async (
 
 			// if any options are still tradeable on this expiration, set them to not tradeable.
 			if (input.length) {
-				totalInput.push(input)
+				totalInput.push(...input)
 			}
 		} else {
 			// expiration date is still valid. check delta values on series individually.
@@ -165,6 +165,18 @@ const seriesDeactivatorLogic = async (
 	}
 	// send the payload if there is any
 	if (totalInput.length) {
+		console.log(
+			'totalInput:',
+			totalInput.map(x => {
+				return {
+					expiration: x.expiration.toNumber(),
+					strike: utils.formatEther(x.strike),
+					isPut: x.isPut,
+					isBuyable: x.isBuyable,
+					isSellable: x.isSellable
+				}
+			})
+		)
 		await manager.changeOptionBuyOrSell(totalInput)
 	}
 }
