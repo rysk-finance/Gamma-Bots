@@ -8,13 +8,13 @@ const seriesDeactivatorLogic = require('../../core-logic/series-deactivator')
 exports.handler = async function (credentials) {
 	// config
 	const relayerAddress = '0x51b15bdfc9a4cc990102ca4a7ee4fb42eb29a3d9' // no series deactivator relayer address created.
-	const optionCatalogueAddress = '0x5F7350aEA196825C3AAc335D97535e9b4EfCDb45'
-	const liquidityPoolAddress = '0x72038BC9f6279bd8F1d0f65535beA7f976e28fc5'
-	const beyondPricerAddress = '0xF18C263aA3926f1AaBb879Cb9fF5905E40239fF4'
-	const managerAddress = '0x45451c486e70c4d17609F441aE4ec1A577925E56'
-	const collateralAssetAddress = '0x6775842ae82bf2f0f987b10526768ad89d79536e' // usdc
-	const strikeAssetAddress = '0x6775842ae82bf2f0f987b10526768ad89d79536e' // usdc
-	const underlyingAssetAddress = '0x53320bE2A35649E9B2a0f244f9E9474929d3B699' // weth
+	const optionCatalogueAddress = '0xde458dD32651F27A8895D4a92B7798Cdc4EbF2f0'
+	const liquidityPoolAddress = '0x0B1Bf5fb77AA36cD48Baa1395Bc2B5fa0f135d8C'
+	const beyondPricerAddress = '0xc939df369C0Fc240C975A6dEEEE77d87bCFaC259'
+	const managerAddress = '0xB8Cb70cf67EF7d7dFb1C70bc7A169DFCcCF0753c'
+	const collateralAssetAddress = '0x408c5755b5c7a0a28D851558eA3636CfC5b5b19d' // usdc
+	const strikeAssetAddress = '0x408c5755b5c7a0a28D851558eA3636CfC5b5b19d' // usdc
+	const underlyingAssetAddress = '0x3b3a1dE07439eeb04492Fa64A889eE25A130CDd3' // weth
 
 	// Initialize default provider and defender relayer signer
 	const provider = new DefenderRelayProvider(credentials)
