@@ -8,9 +8,9 @@ const sabrUpdaterLogic = require("../../core-logic/sabr-updater")
 
 
 exports.handler = async function(credentials) {
-  const volFeedAddress = "0xa0bC9BADC8F9489D440C5B16cf5f51273080137E"
-  const exchangeAddress = "0xd92bEf13fAcC35679Db7cD1397a2D0997d6936A8"
-  const relayerAddress = "0xbfde9d2d2f046d0f0336973c127f71fc2cfef491" // Relayer address
+  const volFeedAddress = "0xF204B60A98B3be05914AeC46bcEd2476D13a0225"
+  const exchangeAddress = "0xC117bf3103bd09552F9a721F0B8Bce9843aaE1fa"
+  const relayerAddress = "0xd5730eDE6Ed7f9051E9E55eB4B507b4F48C46111" // Relayer address
 
   // Initialize default provider and defender relayer signer
   const provider = new DefenderRelayProvider(credentials)
