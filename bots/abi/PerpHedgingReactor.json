@@ -56,11 +56,6 @@
 		"type": "error"
 	},
 	{
-		"inputs": [],
-		"name": "InvalidHealthFactor",
-		"type": "error"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "int256",
@@ -89,6 +84,11 @@
 	{
 		"inputs": [],
 		"name": "ValueFailure",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "WithdrawExceedsLiquidity",
 		"type": "error"
 	},
 	{
