@@ -23,7 +23,7 @@ exports.handler = async function (credentials) {
     return settlerLogic(
         signer,
         optionRegistryAddress,
-        controllerAddress,
+        controllerAddress, 
         liquidityPoolAddress,
         pvfeedAddress
     )
