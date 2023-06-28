@@ -1,10 +1,7 @@
 require("dotenv").config()
 const { ethers } = require("ethers")
 
-const {
-	DefenderRelaySigner,
-	DefenderRelayProvider
-} = require("defender-relay-client/lib/ethers")
+const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
 const { KeyValueStoreClient } = require("defender-kvstore-client")
 const vaultCollateralManagerLogic = require("../../core-logic/vault-collateral-manager")
 
@@ -13,11 +10,11 @@ const vaultCollateralManagerLogic = require("../../core-logic/vault-collateral-m
 exports.handler = async function (credentials) {
 	const store = new KeyValueStoreClient({ path: "./store.json" })
 	// config
-	const relayerAddress = "0xf308f68a42eb577133df915d995dd8c0aee97b42"
-	const optionRegistryAddress = "0x04706DE6cE851a284b569EBaE2e258225D952368"
+	const relayerAddress = "0xF308f68A42eB577133dF915D995dD8C0AeE97B42"
+	const optionRegistryAddress = "0x8Bc23878981a207860bA4B185fD065f4fd3c7725"
 	const controllerAddress = "0x594bD4eC29F7900AE29549c140Ac53b5240d4019"
 	// block that the option regsitry was deployed on
-	const optionRegistryDeployBlock = 25976032
+	const optionRegistryDeployBlock = 105497603
 
 	// Initialize default provider and defender relayer signer
 
@@ -40,10 +37,8 @@ exports.handler = async function (credentials) {
 
 // To run locally (this code will not be executed in Autotasks)
 if (require.main === module) {
-	const {
-		VAULT_THRESHOLD_BOT_API_KEY: apiKey,
-		VAULT_THRESHOLD_BOT_API_SECRET: apiSecret
-	} = process.env
+	const { VAULT_THRESHOLD_BOT_API_KEY: apiKey, VAULT_THRESHOLD_BOT_API_SECRET: apiSecret } =
+		process.env
 	exports
 		.handler({ apiKey, apiSecret })
 		.then(() => process.exit(0))

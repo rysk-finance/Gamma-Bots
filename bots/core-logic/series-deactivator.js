@@ -1,15 +1,13 @@
-require('dotenv').config()
-const { ethers, utils } = require('ethers')
+require("dotenv").config()
+const { ethers, utils } = require("ethers")
 
-const optionCatalogueAbi = require('../abi/OptionCatalogue.json')
-const liquidityPoolAbi = require('../abi/LiquidityPool.json')
-const beyondPricerAbi = require('../abi/BeyondPricer.json')
-const managerAbi = require('../abi/Manager.json')
+const optionCatalogueAbi = require("../abi/OptionCatalogue.json")
+const beyondPricerAbi = require("../abi/BeyondPricer.json")
+const managerAbi = require("../abi/Manager.json")
 
 const seriesDeactivatorLogic = async (
 	signer,
 	optionCatalogueAddress,
-	liquidityPoolAddress,
 	beyondPricerAddress,
 	managerAddress,
 	collateralAssetAddress,
@@ -17,15 +15,14 @@ const seriesDeactivatorLogic = async (
 	underlyingAssetAddress
 ) => {
 	const optionCatalogue = new ethers.Contract(optionCatalogueAddress, optionCatalogueAbi, signer)
-	const liquidityPool = new ethers.Contract(liquidityPoolAddress, liquidityPoolAbi, signer)
 	const beyondPricer = new ethers.Contract(beyondPricerAddress, beyondPricerAbi, signer)
 	const manager = new ethers.Contract(managerAddress, managerAbi, signer)
 
 	const minExpiryTime = 86400
 	const expirations = await optionCatalogue.getExpirations()
 
-	const minDelta = 0.1
-	const maxDelta = 0.7
+	const minDelta = 0.025
+	const maxDelta = 0.975
 
 	// create array to which we will add all Option types to change as we iterate
 	const totalInput = []
@@ -65,7 +62,7 @@ const seriesDeactivatorLogic = async (
 			const promises = formattedOptions.map(async option => {
 				return await optionCatalogue.optionStores(
 					ethers.utils.solidityKeccak256(
-						['uint64', 'uint128', 'bool'],
+						["uint64", "uint128", "bool"],
 						[option.expiration, option.strike, option.isPut]
 					)
 				)
@@ -110,7 +107,7 @@ const seriesDeactivatorLogic = async (
 				// iterate over array, get delta value of option
 				const { totalDelta } = await beyondPricer.quoteOptionPrice(
 					optionSeriesArray[j],
-					ethers.utils.parseEther('1'),
+					ethers.utils.parseEther("1"),
 					false,
 					0
 				)
@@ -121,12 +118,8 @@ const seriesDeactivatorLogic = async (
 					// delta out of range
 					const currentState = await optionCatalogue.optionStores(
 						ethers.utils.solidityKeccak256(
-							['uint64', 'uint128', 'bool'],
-							[
-								optionSeriesArray[j].expiration,
-								optionSeriesArray[j].strike,
-								optionSeriesArray[j].isPut
-							]
+							["uint64", "uint128", "bool"],
+							[optionSeriesArray[j].expiration, optionSeriesArray[j].strike, optionSeriesArray[j].isPut]
 						)
 					)
 					// if the option is tradable, make it not tradeable
@@ -142,12 +135,8 @@ const seriesDeactivatorLogic = async (
 					// delta within range
 					const currentState = await optionCatalogue.optionStores(
 						ethers.utils.solidityKeccak256(
-							['uint64', 'uint128', 'bool'],
-							[
-								optionSeriesArray[j].expiration,
-								optionSeriesArray[j].strike,
-								optionSeriesArray[j].isPut
-							]
+							["uint64", "uint128", "bool"],
+							[optionSeriesArray[j].expiration, optionSeriesArray[j].strike, optionSeriesArray[j].isPut]
 						)
 					)
 					// if the option is not tradable, make it tradeable
@@ -166,7 +155,7 @@ const seriesDeactivatorLogic = async (
 	// send the payload if there is any
 	if (totalInput.length) {
 		console.log(
-			'totalInput:',
+			"totalInput:",
 			totalInput.map(x => {
 				return {
 					expiration: x.expiration.toNumber(),

@@ -7,13 +7,13 @@ const seriesDeactivatorLogic = require("../../core-logic/series-deactivator")
 // Function to keep track of all active Vault IDs and periodically check their collateral health factors and add/remove collateral as needed
 exports.handler = async function (credentials) {
 	// config
-	const relayerAddress = "0x51b15bdfc9a4cc990102ca4a7ee4fb42eb29a3d9" // no series deactivator relayer address created.
-	const optionCatalogueAddress = "0xde458dD32651F27A8895D4a92B7798Cdc4EbF2f0"
-	const beyondPricerAddress = "0xc939df369C0Fc240C975A6dEEEE77d87bCFaC259"
-	const managerAddress = "0xB8Cb70cf67EF7d7dFb1C70bc7A169DFCcCF0753c"
-	const collateralAssetAddress = "0x408c5755b5c7a0a28D851558eA3636CfC5b5b19d" // usdc
-	const strikeAssetAddress = "0x408c5755b5c7a0a28D851558eA3636CfC5b5b19d" // usdc
-	const underlyingAssetAddress = "0x3b3a1dE07439eeb04492Fa64A889eE25A130CDd3" // weth
+	const relayerAddress = "0x776eDE9E537c1580A67FE28033C527b2776B6851"
+	const optionCatalogueAddress = "0x44227Dc2a1d71FC07DC254Dfd42B1C44aFF12168"
+	const beyondPricerAddress = "0xeA5Fb118862876f249Ff0b3e7fb25fEb38158def"
+	const managerAddress = "0xD404D0eD7fe1EB1Cd6388610F9e5B5E6b6E41E72"
+	const collateralAssetAddress = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" // usdc
+	const strikeAssetAddress = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" // usdc
+	const underlyingAssetAddress = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" // weth
 
 	// Initialize default provider and defender relayer signer
 	const provider = new DefenderRelayProvider(credentials)

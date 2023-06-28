@@ -1,9 +1,6 @@
 require("dotenv").config()
 const { ethers } = require("ethers")
-const {
-	DefenderRelaySigner,
-	DefenderRelayProvider
-} = require("defender-relay-client/lib/ethers")
+const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
 const perpCollateralManagerLogic = require("../../core-logic/perp-collateral-manager")
 
 // Entrypoint for the Autotask
@@ -11,7 +8,7 @@ const perpCollateralManagerLogic = require("../../core-logic/perp-collateral-man
 exports.handler = async function (credentials) {
 	// config
 	const relayerAddress = "0x4a3865707b58580bd8c859d606fed02a0c3dec4a"
-	const perpHedgingReactorAddress = "0xDd418b4Ec8396191D08957bD42F549e215B8e89a"
+	const perpHedgingReactorAddress = "0xf013767D55954EcCCacb4914d52D2ef8f95d82C5"
 
 	// Initialize default provider and defender relayer signer
 	const provider = new DefenderRelayProvider(credentials)
