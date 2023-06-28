@@ -1,7 +1,7 @@
-require('dotenv').config()
-const { ethers } = require('ethers')
+require("dotenv").config()
+const { ethers } = require("ethers")
 
-const gmxHedgingReactorAbi = require('../abi/GmxHedgingReactor.json')
+const gmxHedgingReactorAbi = require("../abi/GmxHedgingReactor.json")
 
 const gmxCollateralManagerLogic = async (signer, gmxHedgingReactorAddress) => {
 	const gmxHedgingReactor = new ethers.Contract(
@@ -13,12 +13,12 @@ const gmxCollateralManagerLogic = async (signer, gmxHedgingReactorAddress) => {
 	const minHealthFactor = 4000
 	const maxHealthFactor = 6000
 
-	const [isBelowMin, isAboveMax, healthFactor, collateralToTransfer, position] =
+	const [isBelowMin, isAboveMax, healthFactor, collateralToTransfer, position, longAndShortOpen] =
 		await gmxHedgingReactor.checkVaultHealth()
 
-	if (healthFactor < minHealthFactor || healthFactor > maxHealthFactor) {
+	if (healthFactor < minHealthFactor || healthFactor > maxHealthFactor || longAndShortOpen) {
 		const tx = await gmxHedgingReactor.update({
-			gasLimit: '10000000'
+			gasLimit: "10000000"
 		})
 		await tx.wait()
 	}
@@ -28,7 +28,8 @@ const gmxCollateralManagerLogic = async (signer, gmxHedgingReactorAddress) => {
 		isAboveMax,
 		healthFactor: healthFactor.toNumber(),
 		collateralToTransfer: collateralToTransfer.toNumber(),
-		position
+		position,
+		longAndShortOpen
 	})
 }
 
