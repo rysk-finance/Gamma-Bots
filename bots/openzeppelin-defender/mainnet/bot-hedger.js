@@ -4,7 +4,7 @@ const { ethers } = require("ethers")
 
 exports.handler = async function (credentials) {
 	const relayerAddress = "0xada6667926b8a600576637f7ec7957ab05b99be7" // Relayer address
-	const managerAddress = "0xAdDE1FbBac16EA891622E6e3814eE34cA86C10B0"
+	const managerAddress = "0xD404D0eD7fe1EB1Cd6388610F9e5B5E6b6E41E72"
 	const relayer = new Relayer(credentials)
 	const {
 		queryParameters // Object with key-values from query parameters
