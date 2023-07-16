@@ -9,15 +9,10 @@ const lensAbi = require("../abi/DHVLensMK1.json")
 const seriesDeactivatorLogic = async (
 	signer,
 	optionCatalogueAddress,
-	beyondPricerAddress,
 	managerAddress,
-	collateralAssetAddress,
-	strikeAssetAddress,
-	underlyingAssetAddress
+	lensAddress
 ) => {
-	const lensAddress = "0xa306C00e08ebC84a5F4F67b561B8F6EDeb77600D"
 	const optionCatalogue = new ethers.Contract(optionCatalogueAddress, optionCatalogueAbi, signer)
-	const beyondPricer = new ethers.Contract(beyondPricerAddress, beyondPricerAbi, signer)
 	const manager = new ethers.Contract(managerAddress, managerAbi, signer)
 	const lens = new ethers.Contract(lensAddress, lensAbi, signer)
 
@@ -34,6 +29,7 @@ const seriesDeactivatorLogic = async (
 		const optionExpirationDrill = await lens.getOptionExpirationDrill(expirations[i])
 		const callStrikes = optionExpirationDrill.callStrikes
 		const putStrikes = optionExpirationDrill.putStrikes
+		console.log({ callStrikes, putStrikes })
 		const callOptionDrill = optionExpirationDrill.callOptionDrill
 		const putOptionDrill = optionExpirationDrill.putOptionDrill
 		if (expirations[i] < Date.now() / 1000 + minExpiryTime) {
@@ -75,6 +71,8 @@ const seriesDeactivatorLogic = async (
 
 			// if any options are still tradeable on this expiration, set them to not tradeable.
 			if (input.length) {
+				console.log({ input })
+
 				totalInput.push(...input)
 			}
 		} else {
@@ -176,7 +174,7 @@ const seriesDeactivatorLogic = async (
 				}
 			})
 		)
-		// await manager.changeOptionBuyOrSell(totalInput)
+		await manager.changeOptionBuyOrSell(totalInput)
 	}
 }
 
