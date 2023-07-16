@@ -1,7 +1,7 @@
 require("dotenv").config()
 const { ethers } = require("ethers")
 const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
-const seriesDeactivatorLogic = require("../../core-logic/series-deactivator")
+const seriesDeactivatorLogic = require("../../core-logic/series-deactivator-copy")
 
 // Entrypoint for the Autotask
 // Function to keep track of all active Vault IDs and periodically check their collateral health factors and add/remove collateral as needed
@@ -36,8 +36,8 @@ exports.handler = async function (credentials) {
 // To run locally (this code will not be executed in Autotasks)
 if (require.main === module) {
 	const {
-		BEYOND_TESTNET_SERIES_DEACTIVATOR_API_KEY: apiKey,
-		BEYOND_TESTNET_SERIES_DEACTIVATOR_API_SECRET: apiSecret
+		SERIES_DEACTIVATOR_MAINNET_API_KEY: apiKey,
+		SERIES_DEACTIVATOR_MAINNET_SECRET: apiSecret
 	} = process.env
 	exports
 		.handler({ apiKey, apiSecret })
