@@ -24,8 +24,8 @@ const seriesDeactivatorLogic = async (
 	const minExpiryTime = 86400
 	const expirations = await optionCatalogue.getExpirations()
 
-	const minDelta = 0.1
-	const maxDelta = 0.9
+	const minDelta = 0.025
+	const maxDelta = 0.975
 
 	// create array to which we will add all Option types to change as we iterate
 	const totalInput = []
