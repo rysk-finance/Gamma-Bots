@@ -10,7 +10,7 @@ exports.handler = async function () {
 	const managerAddress = "0xD404D0eD7fe1EB1Cd6388610F9e5B5E6b6E41E72"
 	const lensAddress = "0xa306C00e08ebC84a5F4F67b561B8F6EDeb77600D"
 
-	// Initialize default provider and defender relayer signer
+	// Initialize default provider signer
 	const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RPC_ENDPOINT)
 	const signer = new ethers.Wallet(process.env.REDUNDANT_SERIES_DEACTIVATOR_BOT_PK, provider)
 
