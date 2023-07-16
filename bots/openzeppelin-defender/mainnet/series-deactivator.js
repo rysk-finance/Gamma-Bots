@@ -1,7 +1,7 @@
 require("dotenv").config()
 const { ethers } = require("ethers")
 const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
-const seriesDeactivatorLogic = require("../../core-logic/series-deactivator-copy")
+const seriesDeactivatorLogic = require("../../core-logic/series-deactivator")
 
 // Entrypoint for the Autotask
 // Function to keep track of all active Vault IDs and periodically check their collateral health factors and add/remove collateral as needed

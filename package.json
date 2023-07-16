@@ -18,6 +18,7 @@
 		"gmx-hedger": "node openzeppelin-defender/mainnet/gmx-collateral-manager.js",
 		"perp-hedger": "node openzeppelin-defender/testnet/perp-collateral-manager",
 		"series-deactivator": "node bots/openzeppelin-defender/mainnet/series-deactivator.js",
+		"series-deactivator-lens": "node bots/tenderly/mainnet/series-deactivator.js",
 		"compound-pricer": "node compound-pricer-bot.js",
 		"chainlink-disputer:weth": "node chainlink-disputer-bot.js",
 		"yearn-pricer": "node yearn-pricer.js"
