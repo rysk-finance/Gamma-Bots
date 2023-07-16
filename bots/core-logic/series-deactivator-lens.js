@@ -29,15 +29,12 @@ const seriesDeactivatorLogic = async (
 		const optionExpirationDrill = await lens.getOptionExpirationDrill(expirations[i])
 		const callStrikes = optionExpirationDrill.callStrikes
 		const putStrikes = optionExpirationDrill.putStrikes
-		console.log({ callStrikes, putStrikes })
 		const callOptionDrill = optionExpirationDrill.callOptionDrill
 		const putOptionDrill = optionExpirationDrill.putOptionDrill
 		if (expirations[i] < Date.now() / 1000 + minExpiryTime) {
 			if (expirations[i] < Date.now() / 1000) {
-				console.log("expiry in past")
 				continue
 			}
-			console.log("below min expiry")
 
 			// expiration date is below our minimum DTE. Make all options on this expiration untradeable
 			// format array for changeOptionBuyOrSell that contains all option series of this expiration
@@ -71,20 +68,12 @@ const seriesDeactivatorLogic = async (
 
 			// if any options are still tradeable on this expiration, set them to not tradeable.
 			if (input.length) {
-				console.log({ input })
-
 				totalInput.push(...input)
 			}
 		} else {
-			console.log("above min expiry")
 			for (let j = 0; j < callStrikes.length; j++) {
 				// iterate over array, get delta value of option
 				const totalDelta = optionExpirationDrill.callOptionDrill[j].delta
-				console.log({
-					totalDelta: utils.formatEther(totalDelta),
-					expiration: optionExpirationDrill.expiration.toNumber(),
-					strike: utils.formatEther(callOptionDrill[j].strike)
-				})
 				if (
 					Math.abs(parseFloat(utils.formatEther(totalDelta))) > maxDelta ||
 					Math.abs(parseFloat(utils.formatEther(totalDelta))) < minDelta
@@ -120,11 +109,6 @@ const seriesDeactivatorLogic = async (
 			for (let j = 0; j < putStrikes.length; j++) {
 				// iterate over array, get delta value of option
 				const totalDelta = optionExpirationDrill.putOptionDrill[j].delta
-				console.log({
-					totalDelta: utils.formatEther(totalDelta),
-					expiration: optionExpirationDrill.expiration.toNumber(),
-					strike: utils.formatEther(putOptionDrill[j].strike)
-				})
 				if (
 					Math.abs(parseFloat(utils.formatEther(totalDelta))) > maxDelta ||
 					Math.abs(parseFloat(utils.formatEther(totalDelta))) < minDelta
@@ -160,7 +144,6 @@ const seriesDeactivatorLogic = async (
 		}
 	}
 	// send the payload if there is any
-	console.log("total input length:", totalInput.length)
 	if (totalInput.length) {
 		console.log(
 			"totalInput:",
