@@ -21,8 +21,11 @@ const seriesDeactivatorLogic = async (
 	const minExpiryTime = 86400
 	const expirations = await optionCatalogue.getExpirations()
 
-	const minDelta = 0.025
-	const maxDelta = 0.975
+	const minDeltaOff = 0.025
+	const maxDeltaOff = 0.975
+
+	const minDeltaOn = 0.15
+	const maxDeltaOn = 0.7
 
 	// create array to which we will add all Option types to change as we iterate
 	const totalInput = []
@@ -111,8 +114,8 @@ const seriesDeactivatorLogic = async (
 					0
 				)
 				if (
-					Math.abs(parseFloat(utils.formatEther(totalDelta))) > maxDelta ||
-					Math.abs(parseFloat(utils.formatEther(totalDelta))) < minDelta
+					Math.abs(parseFloat(utils.formatEther(totalDelta))) > maxDeltaOff ||
+					Math.abs(parseFloat(utils.formatEther(totalDelta))) < minDeltaOff
 				) {
 					// delta out of range
 					const currentState = await optionCatalogue.optionStores(
@@ -130,7 +133,10 @@ const seriesDeactivatorLogic = async (
 							isBuyable: false,
 							isSellable: false
 						})
-				} else {
+				} else if (
+					Math.abs(parseFloat(utils.formatEther(totalDelta))) < maxDeltaOn ||
+					Math.abs(parseFloat(utils.formatEther(totalDelta))) > minDeltaOn
+				) {
 					// delta within range
 					const currentState = await optionCatalogue.optionStores(
 						ethers.utils.solidityKeccak256(
