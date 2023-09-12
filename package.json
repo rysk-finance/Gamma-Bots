@@ -37,6 +37,7 @@
 		"url": "git+https://github.com/opynfinance/GammaBots.git"
 	},
 	"devDependencies": {
+		"@tenderly/actions-test": "^0.2.5",
 		"@types/node": "^17.0.40"
 	}
 }

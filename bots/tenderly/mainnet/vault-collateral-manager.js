@@ -1,8 +1,5 @@
 require("dotenv").config()
-const {
-	DefenderRelaySigner,
-	DefenderRelayProvider
-} = require("defender-relay-client/lib/ethers")
+const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
 const { KeyValueStoreClient } = require("defender-kvstore-client")
 const vaultCollateralManagerLogic = require("../../core-logic/vault-collateral-manager")
 
@@ -11,19 +8,15 @@ const vaultCollateralManagerLogic = require("../../core-logic/vault-collateral-m
 exports.handler = async function () {
 	const store = new KeyValueStoreClient({ path: "./store.json" })
 	// config
-	const optionRegistryAddress = "0x217D9CD001CFBc9A8E1b812752b537556e073D4f"
-	const controllerAddress = "0x2acb561509a082bf2c58ce86cd30df6c2c2017f6"
+	const optionRegistryAddress = "0x8Bc23878981a207860bA4B185fD065f4fd3c7725"
+	const controllerAddress = "0x594bD4eC29F7900AE29549c140Ac53b5240d4019"
+	const multicallAddress = "0x7e9Ee45c683F6160eFfB56Ec1253FaF3f43c80A5"
 	// block that the option regsitry was deployed on
-	const optionRegistryDeployBlock = 14157522
+	const optionRegistryDeployBlock = 105497603
 
 	// Initialize default provider and defender relayer signer
-	const provider = new ethers.providers.JsonRpcProvider(
-		process.env.ALCHEMY_RPC_ENDPOINT
-	)
-	const signer = new ethers.Wallet(
-		process.env.REDUNDANT_VAULT_COLLAT_BOT_PK,
-		provider
-	)
+	const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RPC_ENDPOINT)
+	const signer = new ethers.Wallet(process.env.REDUNDANT_VAULT_COLLAT_BOT_PK, provider)
 
 	return vaultCollateralManagerLogic(
 		provider,
@@ -31,6 +24,7 @@ exports.handler = async function () {
 		store,
 		optionRegistryAddress,
 		controllerAddress,
+		multicallAddress,
 		optionRegistryDeployBlock
 	)
 }

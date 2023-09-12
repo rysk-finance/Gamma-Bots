@@ -3,14 +3,15 @@ const { ethers } = require("ethers")
 
 const optionRegistryAbi = require("../abi/OptionRegistry.json")
 const newControllerAbi = require("../abi/NewController.json")
+const multicallAbi = require("../abi/VaultCollateralMulticall.json")
 
 const vaultCollateralManagerLogic = async (
-	testnet,
 	provider,
 	signer,
 	store,
 	optionRegistryAddress,
 	controllerAddress,
+	multicallAddress,
 	optionRegistryDeployBlock
 ) => {
 	// the block number on which this function was last called
@@ -19,13 +20,9 @@ const vaultCollateralManagerLogic = async (
 	let activeVaultIds
 	// the vaultCount for the option registry on the last function call
 	let previousVaultCount
-	// multiple of upperHeathFactor above which extra collateral is removed
-	const upperhealthFactorBuffer = 1.01
 	try {
 		// get persistant variables from store
-		lastQueryBlock = parseInt(
-			await store.get("mainnetCollateralThresholdLastQueryBlock")
-		)
+		lastQueryBlock = parseInt(await store.get("mainnetCollateralThresholdLastQueryBlock"))
 		activeVaultIds = JSON.parse(await store.get("mainnetActiveVaultIds"))
 		previousVaultCount = parseInt(await store.get("mainnetPreviousVaultCount"))
 		console.log({ lastQueryBlock, activeVaultIds, previousVaultCount })
@@ -40,18 +37,13 @@ const vaultCollateralManagerLogic = async (
 		previousVaultCount = 0
 	}
 	// option registry instance
-	const optionRegistry = new ethers.Contract(
-		optionRegistryAddress,
-		optionRegistryAbi,
-		signer
-	)
+	const optionRegistry = new ethers.Contract(optionRegistryAddress, optionRegistryAbi, signer)
 
 	// Opyn controller instance
-	const controller = new ethers.Contract(
-		controllerAddress,
-		newControllerAbi,
-		signer
-	)
+	const controller = new ethers.Contract(controllerAddress, newControllerAbi, signer)
+
+	// Vault collateral multicall instance
+	const multicall = new ethers.Contract(multicallAddress, multicallAbi, signer)
 
 	const currentBlock = await provider.getBlockNumber()
 	// will contain emitted SettledVault events since the previous function execution
@@ -82,10 +74,7 @@ const vaultCollateralManagerLogic = async (
 			}
 		}
 	} else {
-		settleEvents = await controller.queryFilter(
-			controller.filters.VaultSettled(),
-			lastQueryBlock
-		)
+		settleEvents = await controller.queryFilter(controller.filters.VaultSettled(), lastQueryBlock)
 		liquidationEvents = await controller.queryFilter(
 			controller.filters.VaultLiquidated(),
 			lastQueryBlock
@@ -94,10 +83,7 @@ const vaultCollateralManagerLogic = async (
 	console.log({ settleEvents, liquidationEvents })
 
 	// set last query block to current block value
-	await store.put(
-		"mainnetCollateralThresholdLastQueryBlock",
-		currentBlock.toString()
-	)
+	await store.put("mainnetCollateralThresholdLastQueryBlock", currentBlock.toString())
 	// return vault IDs of settled vault events where the vault owner is the option registry
 	let settledEventIds = []
 	if (settleEvents.length) {
@@ -118,9 +104,7 @@ const vaultCollateralManagerLogic = async (
 	console.log("vault count:", vaultCount)
 
 	// create an array of vault IDs that have been created since last execution
-	const additionalVaultIds = Array.from(Array(vaultCount + 1).keys()).slice(
-		previousVaultCount + 1
-	)
+	const additionalVaultIds = Array.from(Array(vaultCount + 1).keys()).slice(previousVaultCount + 1)
 	console.log({ additionalVaultIds })
 	// update previousVaultCount in storage
 	await store.put("mainnetPreviousVaultCount", vaultCount.toString())
@@ -134,41 +118,17 @@ const vaultCollateralManagerLogic = async (
 
 	// iterate over vaults and check health. adjust if needed
 	if (activeVaultIds.length) {
-		for (let i = 0; i <= activeVaultIds.length - 1; i++) {
-			try {
-				const [
-					isBelowMin,
-					isAboveMax,
-					healthFactor,
-					upperHealthFactor,
-					collatRequired,
-					collatAsset
-				] = await optionRegistry.checkVaultHealth(activeVaultIds[i])
-
-				console.log({
-					arrayId: activeVaultIds[i],
-					isBelowMin,
-					isAboveMax,
-					healthFactor: healthFactor.toNumber(),
-					upperHealthFactor: upperHealthFactor.toNumber(),
-					collatRequired: parseInt(collatRequired, 16),
-					collatAsset
-				})
-				if (
-					isBelowMin ||
-					(isAboveMax &&
-						healthFactor > upperhealthFactorBuffer * upperHealthFactor)
-				) {
-					console.log("adjust collateral")
-					const tx = await optionRegistry.adjustCollateral(activeVaultIds[i], {
-						gasLimit: "1000000"
-					})
-
-					await tx.wait()
-				}
-			} catch (err) {
-				console.error("error!:", err)
+		let vaultsToAdjust = []
+		try {
+			vaultsToAdjust = (await multicall.checkVaults(activeVaultIds))
+				.map(id => id.toNumber())
+				.filter(id => id != 0)
+			console.log({ vaultsToAdjust })
+			if (vaultsToAdjust.length) {
+				await multicall.adjustVaults(vaultsToAdjust, { gasLimit: "10000000" })
 			}
+		} catch (err) {
+			console.error("error!:", err)
 		}
 	}
 }
