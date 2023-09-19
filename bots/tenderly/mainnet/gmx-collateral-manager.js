@@ -6,13 +6,13 @@ const gmxCollateralManagerLogic = require("../../core-logic/gmx-collateral-manag
 // Function to keep track of all active Vault IDs and periodically check their collateral health factors and add/remove collateral as needed
 exports.handler = async function () {
 	// config
-	const gmxHedgingReactorAddress = "0xbCd871faAf2c36D57B0F4C006c6B0Cc2E1929736"
+	const gmxHedgingReactorAddress = "0x575e7766F22DBE82b6DD31B915B7D429B9409F16"
 
 	// Initialize default provider and defender relayer signer
 	const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_RPC_ENDPOINT)
 	const signer = new ethers.Wallet(process.env.REDUNDANT_GMX_COLLAT_BOT_PK, provider)
 
-	return gmxCollateralManagerLogic(signer, perpHedgingReactorAddress)
+	return gmxCollateralManagerLogic(signer, gmxHedgingReactorAddress)
 }
 
 // To run locally (this code will not be executed in Autotasks)

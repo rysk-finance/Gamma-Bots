@@ -1,6 +1,4 @@
 require("dotenv").config()
-
-const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
 const sabrUpdaterLogic = require("../../core-logic/sabr-updater")
 // Entrypoint for the Autotask
 exports.handler = async function () {
@@ -15,7 +13,7 @@ exports.handler = async function () {
 	const {
 		queryParameters // Object with key-values from query parameters
 	} = credentials.request
-	return sabrUpdaterlogic(signer, volFeedAddress, exchangeAddress, queryParameters)
+	return sabrUpdaterLogic(signer, volFeedAddress, exchangeAddress, queryParameters)
 }
 
 // To run locally (this code will not be executed in Autotasks)

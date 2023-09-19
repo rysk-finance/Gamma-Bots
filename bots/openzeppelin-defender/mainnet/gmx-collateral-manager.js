@@ -7,7 +7,7 @@ const gmxCollateralManagerLogic = require("../../core-logic/gmx-collateral-manag
 exports.handler = async function (credentials) {
 	// config
 	const relayerAddress = "0x88a8974d582df40f6315642f21420b9dbcccbc20"
-	const gmxHedgingReactorAddress = "0xbCd871faAf2c36D57B0F4C006c6B0Cc2E1929736"
+	const gmxHedgingReactorAddress = "0x575e7766F22DBE82b6DD31B915B7D429B9409F16"
 
 	// Initialize default provider and defender relayer signer
 	const provider = new DefenderRelayProvider(credentials)

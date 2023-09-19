@@ -1,40 +1,20 @@
 const { ethers } = require("ethers")
 
-const newControllerAbi = require("../abi/NewController.json")
-const optionRegistryAbi = require("../abi/OptionRegistry.json")
-const liquidityPoolAbi = require("../abi/LiquidityPool.json")
 const pvFeedAbi = require("../abi/PvFeed.json")
+const multicallAbi = require("../abi/SettlerMulticall.json")
 
-const settlerLogic = async (
-	signer,
-	optionRegistryAddress,
-	controllerAddress,
-	liquidityPoolAddress,
-	pvfeedAddress
-) => {
-	const liquidityPool = new ethers.Contract(liquidityPoolAddress, liquidityPoolAbi, signer)
-	const optionRegistry = new ethers.Contract(optionRegistryAddress, optionRegistryAbi, signer)
-	const controller = new ethers.Contract(controllerAddress, newControllerAbi, signer)
+const settlerLogic = async (signer, pvfeedAddress, multicallAddress) => {
 	const pvfeed = new ethers.Contract(pvfeedAddress, pvFeedAbi, signer)
-	// Otoken expiry hour in UTC
-	const expiryHour = 8
-	// current timestamp in UTC seconds
-	let currentTimestamp = new Date()
-	const hour = currentTimestamp.getHours()
-	currentTimestamp = Math.floor(currentTimestamp.getTime() / 1000)
-	if (hour == expiryHour) {
-		const series = await pvfeed.getAddressSet()
+	const multicall = new ethers.Contract(multicallAddress, multicallAbi, signer)
 
-		for (let i = 0; i < series.length(); i++) {
-			const vaultId = await optionRegistry.vaultIds(series[i])
-			const vault = await controller.getVault(optionRegistryAddress, vaultId)
-			if ((await controller.isSettlementAllowed(series[i])) && vault.shortAmounts[0] > 0) {
-				let tx = await liquidityPool.settleVault(series[i], { gasLimit: "10000000" })
-				console.log("Tx hash: ", tx.hash)
-			} else {
-				console.log("Vault already settled")
-			}
-		}
+	const series = await pvfeed.getAddressSet()
+	const multicallResponse = await multicall.checkVaultsToSettle(series)
+	const vaultsToSettle = multicallResponse[0].filter(
+		id => id != "0x0000000000000000000000000000000000000000"
+	)
+	console.log(multicallResponse)
+	if (multicallResponse[1] == true) {
+		await multicall.settleVaults(vaultsToSettle, { gasLimit: "100000000" })
 	}
 }
 

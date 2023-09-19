@@ -7,7 +7,7 @@ const seriesDeactivatorLogic = require("../../core-logic/series-deactivator-lens
 exports.handler = async function () {
 	// config
 	const optionCatalogueAddress = "0x44227Dc2a1d71FC07DC254Dfd42B1C44aFF12168"
-	const managerAddress = "0xD404D0eD7fe1EB1Cd6388610F9e5B5E6b6E41E72"
+	const managerAddress = "0x5F35B814C2e3A5a499C385Eb7426b2e71e852Ff4"
 	const lensAddress = "0xa306C00e08ebC84a5F4F67b561B8F6EDeb77600D"
 
 	// Initialize default provider signer
