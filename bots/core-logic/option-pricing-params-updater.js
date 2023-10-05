@@ -20,59 +20,50 @@ const optionPricingParamsUpdaterLogic = async (signer, managerAddress, exchangeA
 
 	// ************ set params ************
 
+	// input is given as percentage with e18 decimal formatting. 100% --> "1 000 000 000 000 000 000"
 	if ("set_low_delta_sell_option_flat_iv" in body) {
 		console.log("setting low delta sell option flat IV")
-		await manager.setLowDeltaSellOptionFlatIV(
-			ethers.utils.parseEther(body.set_low_delta_sell_option_flat_iv)
-		)
+		await manager.setLowDeltaSellOptionFlatIV(body.set_low_delta_sell_option_flat_iv)
 	}
-	console.log("boop", "set_low_delta_threshold" in body)
 
-	// input is given as delta value between 0 and 1. no deciaml formatting.
+	// input is given as delta value between 0 and 1. e18 deciaml formatting.
 	if ("set_low_delta_threshold" in body) {
 		console.log("setting low delta Threshold")
-		await manager.setLowDeltaThreshold(ethers.utils.parseEther(body.set_low_delta_threshold))
+		await manager.setLowDeltaThreshold(body.set_low_delta_threshold)
 	}
 
-	// input is given as percentage with no decimal formatting. 3% --> 0.03
-	if ("set_bid_ask_IV_spread" in body) {
+	// input is given as percentage with e18 decimal formatting. 100% --> "1 000 000 000 000 000 000"
+	if ("set_bid_ask_iv_spread" in body) {
 		console.log("setting bid/ask IV Spread")
-		await manager.setBidAskIVSpread(ethers.utils.parseEther(body.set_bid_ask_IV_spread))
+		await manager.setBidAskIVSpread(body.set_bid_ask_iv_spread)
 	}
 
-	// input is given with no decimal formatting. eg 0.0001
+	// input is given with e18 decimal formatting. eg 0.0001 -> "100 000 000 000 000"
 	if ("set_slippage_gradient" in body) {
 		console.log("setting slippage gradient")
-		await manager.setSlippageGradient(ethers.utils.parseEther(body.set_slippage_gradient))
+		await manager.setSlippageGradient(body.set_slippage_gradient)
 	}
 
-	// input is given as percentage with no decimal formatting. 4% --> 0.04
+	// input is given as percentage with e6 decmial formatting. 100% --> "1 000 000"
 	if ("set_collateral_lending_rate" in body) {
 		console.log("setting collateral lending rate")
-		await manager.setCollateralLendingRate(
-			ethers.utils.parseUnits(body.set_collateral_lending_rate, 6)
-		)
+		await manager.setCollateralLendingRate(body.set_collateral_lending_rate)
 	}
-	console.log("boop", "set_delta_borrow_rates" in body)
 
-	/*	input given as a JSON object in the following format
+	/*	input given as a JSON object in the following format. 100% --> "1 000 000"
 			{
-				"sellLong": 0.2,
-				"sellShort": 0.1,
-				"buyLong": -0.1,
-				"buyShort": -0.05
+				"sellLong": 200000, --> 20%
+				"sellShort": 100000,  --> 10%
+				"buyLong": -100000,  --> -10%
+				"buyShort": -50000  --> -5%
 			}
 	*/
 	if ("set_delta_borrow_rates" in body) {
 		console.log("setting delta borrow rates")
-		let params = {}
-		Object.keys(body.set_delta_borrow_rates).forEach(rate => {
-			params[rate] = body.set_delta_borrow_rates[rate] * 1000000
-		})
-		console.log("params", params)
-		await manager.setDeltaBorrowRates(params)
+		await manager.setDeltaBorrowRates(body.set_delta_borrow_rates)
 	}
 
+	// array multiplier values given as e18 notation. each must be > 1e18
 	if ("set_slippage_gradient_multipliers" in body) {
 		console.log(
 			"setting slippage gradient multipliers for tenor ",
@@ -87,6 +78,7 @@ const optionPricingParamsUpdaterLogic = async (signer, managerAddress, exchangeA
 		)
 	}
 
+	// array multiplier values given as e18 notation. each must be > 1e18
 	if ("set_spread_collateral_multipliers" in body) {
 		console.log(
 			"setting spread collateral multipliers for tenor ",
@@ -101,6 +93,7 @@ const optionPricingParamsUpdaterLogic = async (signer, managerAddress, exchangeA
 		)
 	}
 
+	// array multiplier values given as e18 notation. each must be > 1e18
 	if ("set_spread_delta_multipliers" in body) {
 		console.log(
 			"setting spread delta multipliers for tenor ",

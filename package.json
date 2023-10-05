@@ -18,6 +18,7 @@
 		"gmx-hedger": "node bots/openzeppelin-defender/mainnet/gmx-collateral-manager.js",
 		"option-pricing-updater": "node bots/openzeppelin-defender/mainnet/option-pricing-params-updater.js",
 		"perp-hedger": "node bots/openzeppelin-defender/testnet/perp-collateral-manager",
+		"range-order": "node bots/openzeppelin-defender/mainnet/range-order-fulfill.js",
 		"series-deactivator": "node bots/openzeppelin-defender/mainnet/series-deactivator.js",
 		"series-deactivator-lens": "node bots/tenderly/mainnet/series-deactivator.js",
 		"compound-pricer": "node compound-pricer-bot.js",
