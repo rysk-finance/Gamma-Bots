@@ -1,6 +1,5 @@
 require("dotenv").config()
 const { DefenderRelaySigner, DefenderRelayProvider } = require("defender-relay-client/lib/ethers")
-const { ethers } = require("ethers")
 const rangeOrderFulfillLogic = require("../../core-logic/range-order-fulfill")
 
 exports.handler = async function (credentials) {
