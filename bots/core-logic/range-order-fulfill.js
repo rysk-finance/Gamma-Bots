@@ -39,14 +39,14 @@ const rangeOrderFulfillLogic = async (signer, reactorAddress) => {
 }
 
 const tick_to_price = (tick, token0Decimals = 18, token1Decimals = 6) => {
-	price_raw = 1.0001 ** tick
-	price_adjusted = (price_raw * 10 ** token1Decimals) / 10 ** token0Decimals
+	const price_raw = 1.0001 ** tick
+	const price_adjusted = (price_raw * 10 ** token1Decimals) / 10 ** token0Decimals
 	return price_adjusted
 }
 
 const normalized_tick_to_price = (tick, token0Decimals = 18, token1Decimals = 6) => {
-	raw_price = tick_to_price(tick, token0Decimals, token1Decimals)
-	normalization_factor = 10 ** (2 * (token0Decimals - token1Decimals))
+	const raw_price = tick_to_price(tick, token0Decimals, token1Decimals)
+	const normalization_factor = 10 ** (2 * (token0Decimals - token1Decimals))
 	return raw_price * normalization_factor
 }
 module.exports = rangeOrderFulfillLogic
