@@ -28,44 +28,50 @@ const optionPricingParamsUpdaterLogic = async (
 	// input is given as percentage with e18 decimal formatting. 100% --> "1 000 000 000 000 000 000"
 	if ("set_low_delta_sell_option_flat_iv" in queryParameters) {
 		console.log("setting low delta sell option flat IV")
-		await manager.setLowDeltaSellOptionFlatIV(queryParameters.set_low_delta_sell_option_flat_iv)
+		input = JSON.parse(queryParameters.set_low_delta_sell_option_flat_iv)
+		await manager.setLowDeltaSellOptionFlatIV(input)
 	}
 
 	// input is given as delta value between 0 and 1. e18 deciaml formatting.
 	if ("set_low_delta_threshold" in queryParameters) {
 		console.log("setting low delta Threshold")
-		await manager.setLowDeltaThreshold(queryParameters.set_low_delta_threshold)
+		input = JSON.parse(queryParameters.set_low_delta_threshold)
+		await manager.setLowDeltaThreshold(input)
 	}
 
 	// input is given as percentage with e18 decimal formatting. 100% --> "1 000 000 000 000 000 000"
 	if ("set_bid_ask_iv_spread" in queryParameters) {
 		console.log("setting bid/ask IV Spread")
-		await manager.setBidAskIVSpread(queryParameters.set_bid_ask_iv_spread)
+		input = JSON.parse(queryParameters.set_bid_ask_iv_spread)
+		await manager.setBidAskIVSpread(input)
 	}
 
 	// input is given with e18 decimal formatting. eg 0.0001 -> "100 000 000 000 000"
 	if ("set_slippage_gradient" in queryParameters) {
 		console.log("setting slippage gradient")
-		await manager.setSlippageGradient(queryParameters.set_slippage_gradient)
+		input = JSON.parse(queryParameters.set_slippage_gradient)
+		await manager.setSlippageGradient(input)
 	}
 
 	// input is given as percentage with e6 decmial formatting. 100% --> "1 000 000"
 	if ("set_collateral_lending_rate" in queryParameters) {
 		console.log("setting collateral lending rate")
-		await manager.setCollateralLendingRate(queryParameters.set_collateral_lending_rate)
+		input = JSON.parse(queryParameters.set_collateral_lending_rate)
+		await manager.setCollateralLendingRate(input)
 	}
 
-	/*	input given as a JSON object in the following format. 100% --> "1 000 000"
-			{
-				"sellLong": 200000, --> 20%
-				"sellShort": 100000,  --> 10%
-				"buyLong": -100000,  --> -10%
-				"buyShort": -50000  --> -5%
-			}
-	*/
+	/*	input given as a JSON object in the following format. 100% --> 1 000 000
+				{
+					"sellLong": 200000, --> 20%
+					"sellShort": 100000,  --> 10%
+					"buyLong": -100000,  --> -10%
+					"buyShort": -50000  --> -5%
+				}
+		*/
 	if ("set_delta_borrow_rates" in queryParameters) {
 		console.log("setting delta borrow rates")
-		await manager.setDeltaBorrowRates(queryParameters.set_delta_borrow_rates)
+		input = JSON.parse(queryParameters.set_delta_borrow_rates)
+		await manager.setDeltaBorrowRates(input)
 	}
 
 	// array multiplier values given as e18 notation. each must be > 1e18
@@ -76,10 +82,11 @@ const optionPricingParamsUpdaterLogic = async (
 			queryParameters.set_slippage_gradient_multipliers.callSlippageGradientMultipliers,
 			queryParameters.set_slippage_gradient_multipliers.putSlippageGradientMultipliers
 		)
+		input = JSON.parse(queryParameters.set_slippage_gradient_multipliers)
 		await manager.setSlippageGradientMultipliers(
-			queryParameters.set_slippage_gradient_multipliers.tenorIndex,
-			queryParameters.set_slippage_gradient_multipliers.callSlippageGradientMultipliers,
-			queryParameters.set_slippage_gradient_multipliers.putSlippageGradientMultipliers
+			input.tenorIndex,
+			input.callSlippageGradientMultipliers,
+			input.putSlippageGradientMultipliers
 		)
 	}
 
@@ -91,10 +98,11 @@ const optionPricingParamsUpdaterLogic = async (
 			queryParameters.set_spread_collateral_multipliers.callSpreadCollateralMultipliers,
 			queryParameters.set_spread_collateral_multipliers.putSpreadCollateralMultipliers
 		)
+		input = JSON.parse(queryParameters.set_spread_collateral_multipliers)
 		await manager.setSpreadCollateralMultipliers(
-			queryParameters.set_spread_collateral_multipliers.tenorIndex,
-			queryParameters.set_spread_collateral_multipliers.callSpreadCollateralMultipliers,
-			queryParameters.set_spread_collateral_multipliers.putSpreadCollateralMultipliers
+			input.tenorIndex,
+			input.callSpreadCollateralMultipliers,
+			input.putSpreadCollateralMultipliers
 		)
 	}
 
@@ -106,10 +114,11 @@ const optionPricingParamsUpdaterLogic = async (
 			queryParameters.set_spread_delta_multipliers.callSpreadDeltaMultipliers,
 			queryParameters.set_spread_delta_multipliers.putSpreadDeltaMultipliers
 		)
+		input = JSON.parse(queryParameters.set_spread_delta_multipliers)
 		await manager.setSpreadDeltaMultipliers(
-			queryParameters.set_spread_delta_multipliers.tenorIndex,
-			queryParameters.set_spread_delta_multipliers.callSpreadDeltaMultipliers,
-			queryParameters.set_spread_delta_multipliers.putSpreadDeltaMultipliers
+			input.tenorIndex,
+			input.callSpreadDeltaMultipliers,
+			input.putSpreadDeltaMultipliers
 		)
 	}
 	// ********** end set params **********
