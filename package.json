@@ -23,7 +23,8 @@
 		"series-deactivator-lens": "node bots/tenderly/mainnet/series-deactivator.js",
 		"compound-pricer": "node compound-pricer-bot.js",
 		"chainlink-disputer:weth": "node chainlink-disputer-bot.js",
-		"yearn-pricer": "node yearn-pricer.js"
+		"yearn-pricer": "node yearn-pricer.js",
+		"test": "mocha tests/**/*.test.js"
 	},
 	"keywords": [
 		"Bots",
@@ -39,7 +40,10 @@
 		"url": "git+https://github.com/opynfinance/GammaBots.git"
 	},
 	"devDependencies": {
-		"@tenderly/actions-test": "^0.2.5",
-		"@types/node": "^17.0.40"
+		"@tenderly/actions-test": "^0.2.13",
+		"@types/node": "^17.0.40",
+		"chai": "^5.0.0",
+		"chai-as-promised": "^7.1.1",
+		"mocha": "^10.2.0"
 	}
 }
