@@ -5,6 +5,7 @@ const managerAbi = require('../../abi/Manager.json')
 // constants
 const MANAGER_ADDRESS = "0xa7AD85AC7Eda2807fA2d596B3ff1F9b63D4d3682"
 const HEDGER_BOT_ADDRESS = "0x259585e3D8a4cc209b33eEa64751287Ed05629b7"
+const DISCORD_WEBHOOK = 'TENDERLY_DELTA_HEDGER_DISCORD_WEBHOOK'
 
 class DiscordNotifier {
   constructor(context) {
@@ -27,7 +28,7 @@ class DiscordNotifier {
 
     console.log('Sending to Discord:', embed);
 
-    const webhookLink = await this.context.secrets.get("tenderlyWarningWebhook");
+    const webhookLink = await this.context.secrets.get(DISCORD_WEBHOOK);
 
     try {
       const response = await axios.post(webhookLink, data, {
@@ -47,11 +48,23 @@ class DiscordNotifier {
   }
 
   async sendHedgeFailure(text) {
-    const title = "Hedge Order Failure";
+    const title = "TENDERLY HEDGER: Failure";
     const description = "An error occurred while processing the hedge order.";
 
     const fields = [
       { name: "Error:", value: text, inline: true }
+    ];
+
+    await this.#notifyDiscord(title, description, fields);
+  }
+
+  async sendHedgeSuccess(delta, reactorIndex, txHash) {
+    const title = "TENDERLY HEDGER: Order Success";
+    const description = "Hedge order was successful.";
+    const fields = [
+      { name: "Delta:", value: delta, inline: true },
+      { name: "Reactor Index:", value: reactorIndex, inline: true },
+      { name: "Transaction Hash:", value: txHash, inline: true }
     ];
 
     await this.#notifyDiscord(title, description, fields);
@@ -66,7 +79,7 @@ async function createEthereumClient(secrets) {
     await secrets.get("REDUNDANT_DELTA_HEDGER_BOT_PK"),
     provider
   );
-  return signer
+  return signer;
 }
 
 async function validateDeltaWithinLimit(manager, delta) {
@@ -77,9 +90,10 @@ async function validateDeltaWithinLimit(manager, delta) {
   }
 }
 
-async function hedgeDelta(manager, delta, reactorIndex) {
+async function hedgeDelta(manager, delta, reactorIndex, notifier) {
   await validateDeltaWithinLimit(manager, delta);
   let tx = await manager.rebalancePortfolioDelta(delta, reactorIndex);
+  if (notifier) await notifier.sendHedgeSuccess(delta, reactorIndex, tx.hash);
   return tx.hash;
 }
 
@@ -93,13 +107,11 @@ const actionFn = async (context, webhookEvent, createClient = createEthereumClie
     const manager = new ethers.Contract(MANAGER_ADDRESS, managerAbi, signer);
     const queryParameters = webhookEvent.payload;
 
-    return await perform(manager, queryParameters.delta, queryParameters.reactor_index);
+    return await perform(manager, queryParameters.delta, queryParameters.reactor_index, notifier);
   } catch (error) {
-    notifier.sendHedgeFailure(error);
+    await notifier.sendHedgeFailure(error);
   }
 };
 
-// Do not change this.
+// below line must export actionFn in production
 module.exports = { actionFn, createEthereumClient, hedgeDelta, DiscordNotifier, validateDeltaWithinLimit }
-
-

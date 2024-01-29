@@ -66,7 +66,6 @@ describe.skip('DiscordNotifier Integration Tests', () => {
     let WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL';
   
     beforeEach(() => {
-      // Set up your context here
       context = {
         secrets: {
           get: async (key) => {
