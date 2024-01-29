@@ -12,9 +12,6 @@ class DiscordNotifier {
   }
 
   async #notifyDiscord(title, description, fields, footer_text = null) {
-    console.log('Sending to Discord:', title);
-
-    const webhookLink = await this.context.secrets.get("tenderlyWarningWebhook");
 
     const embed = {
       title: title,
@@ -27,6 +24,10 @@ class DiscordNotifier {
       content: "Automated Hedge Order",
       embeds: [embed]
     };
+
+    console.log('Sending to Discord:', embed);
+
+    const webhookLink = await this.context.secrets.get("tenderlyWarningWebhook");
 
     try {
       const response = await axios.post(webhookLink, data, {
@@ -65,7 +66,7 @@ async function createEthereumClient(secrets) {
     await secrets.get("REDUNDANT_DELTA_HEDGER_BOT_PK"),
     provider
   );
-  return { provider, signer };
+  return signer
 }
 
 async function validateDeltaWithinLimit(manager, delta) {
@@ -88,7 +89,7 @@ const actionFn = async (context, webhookEvent, createClient = createEthereumClie
   }
 
   try {
-    const { provider, signer } = createClient(context.secrets);
+    const signer = await createClient(context.secrets);
     const manager = new ethers.Contract(MANAGER_ADDRESS, managerAbi, signer);
     const queryParameters = webhookEvent.payload;
 
