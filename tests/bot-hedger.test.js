@@ -3,7 +3,7 @@ import('chai').then(chai => {
     expect = chai.expect;
 });
 const { ethers } = require('ethers');
-const { actionFn, createEthereumClient, validateDeltaWithinLimit } = require('../bots/tenderly/mainnet/bot-hedger');
+const { actionFn, createEthereumClient, validateDeltaWithinLimit, DiscordNotifier } = require('../bots/tenderly/mainnet/bot-hedger');
 const { TestContext, TestRuntime, TestWebhookEvent } = require('@tenderly/actions-test');
 const managerAbi = require('../bots/abi/Manager.json');
 
@@ -58,3 +58,31 @@ describe('Tenderly delta hedging bot tests', () => {
     });
 
 });
+
+describe.skip('DiscordNotifier Integration Tests', () => {
+    let notifier;
+    let context;
+    // Replace with actual webhook URL
+    let WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL';
+  
+    beforeEach(() => {
+      // Set up your context here
+      context = {
+        secrets: {
+          get: async (key) => {
+            if (key === "tenderlyWarningWebhook") {
+              return WEBHOOK_URL;
+            }
+          }
+        }
+      };
+  
+      notifier = new DiscordNotifier(context);
+    });
+  
+    it('should send a hedge failure message to Discord', async () => {
+      const text = "Test error message";
+      // Check discord to ensure that the message was sent
+      await notifier.sendHedgeFailure(text);
+    });
+  });
