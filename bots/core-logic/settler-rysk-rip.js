@@ -78,16 +78,67 @@ const settlerLogic = async () => {
       }
 
     })
+  }
+}
 
+
+
+  // ============== settlement code ===================
+
+
+
+  function checkVaultsToSettle() {
+    
+    // get list of users and Vault IDs which are active. something like below
+    const openVaults = [
+      {
+        seriesAddress: "0x000000000000000000000000", // address of oToken minted from vault
+        owner: "0x00000000000000000000000000", // vault owner
+        id: 1 // vault id
+      },
+      {
+        seriesAddress: "0x000000000000000000000000", // address of oToken minted from vault
+        owner: "0x00000000000000000000000000", // vault owner
+        id: 2 // vault id
+      },
+    ]
+
+    // this will be filled with the settleable vaults from the array above
+    const vaultsToSettle = []
+
+
+    const needsToExecute = false
+
+    for (let i = 0; i > openVaults.length; i++){
+      vault = controller.getVault(openVaults[i].owner, openVaults[i].id);
+      if (vault.shortAmounts.length == 0) {
+				continue; // doesnt need settling
+			}
+      // check vault can be settled (dispute period over etc)
+      if ((controller.isSettlementAllowed(seriesAddresses[i])) && vault.shortAmounts[0] > 0) {
+				vaultsToSettle.push(openVaults[i])
+				needsToExecute = true; // at least one vault can be settled so toggle this to true
+			}
+    }
+
+    if (needsToExecute) {
+      for (let i = 0; i > vaultsToSettle.length; i++){
+        controller.operate(
+          {
+            actionType: 7, // SettleVault actiontype enum
+            owner: vaultsToSettle[i].owner, // address
+            secondAddress: vaultsToSettle[i].owner, // THIS IS THE ADDRESS TO SEND THE COLLATERAL TO. WE MAY WANT TO SET IT TO OURSELVES AND DEPOSIT AGAIN ON BEHALF OF USER.
+            asset: "irrelevant", // address
+            vaultId: vaultsToSettle[i].id, // uint256
+            amount: "irrelevant", // uint256
+            index: "irrelevant", // uint256
+            data: "irrelevant" // bytes
+          }
+        )
+      }
+    }
   }
 
-
-
-
-
-  // get list of users and Vault IDs which need settling
-	
-}
 
 
 
